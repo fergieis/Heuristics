@@ -9,10 +9,8 @@
 	- [ ] Ant Colony
 
 Modular Code: 
-- [ ] Implement Heuristic 1
-- [ ] Implement Heuristic 2
-- [ ] Build Feval
-- [ ] Build isFeas
+- Due 15 April 2016
+- [ ] Mechanism to read in problem
 - [ ] Input reader (read xls file) using:
 	+ xlutils or
 	+ xlrd and xlwt
@@ -22,8 +20,14 @@ Modular Code:
 		+ http://www.python-excel.org/
 	+ pyexcel
 		+http://pythonhosted.org/pyexcel/
+- [ ] Build Feval
+- [ ] Basic wrapper (for a given x)
+
+- [ ] Build isFeas
+- [ ] Implement Heuristic 1 (find x's to eval) 
+- [ ] Implement Heuristic 2
+
+
 - [ ] output? (write to new sheet?) See Input reader options
-
-
 
 
