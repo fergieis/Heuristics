@@ -4,8 +4,7 @@ import pandas as pd
 #from openpyxl import load_workbook
 
 def readProblem(i):
-#Read in a single problem, and then
-#return A,b,c as numpy arrays
+#filename, sheetname	
 	
 	filename = 'ProjectProblems.xlsx'
 	sheetname = 'Sample Problems'
@@ -25,39 +24,28 @@ def readProblem(i):
 
 
 def feval(c,x):
-#return objective function value at some point 'x'
 	return np.dot(c,x)
 
-def isFeasible(A,b,x):
-#return boolean value representing feasibility of x	
+def isFeasible(A,b,x):	
 	return (np.all(np.less_equal(np.dot(A,x),b)))
 
+def readData(filename):
+	return A, b, c
+
 def antColony(c,x):
-#Ant Colony (?) - insert docstring here
 
 	return x
 
 def TABUsearch(c,x):
-#TABU Search- docstring here
 
 	return x
 
-#/--------------------/
-#         MAIN
-#/--------------------/
-
-#will loop over all problems, here just #1
 (A, b, c) = readProblem(1)
-
-#Call heuristics -- 
-
-#Evaluate a random x
 x = np.random.randint(2, size=50)
 print(isFeasible(A,b,x))
 z = feval(c,x)
 print(z)
 
-#Evaluate a trivial solution, 0 vector
 x = np.zeros(50)
 print(isFeasible(A,b,x))
 z = feval(c,x)
