@@ -10,8 +10,8 @@
 
 Modular Code: 
 - Due 15 April 2016
-- [ ] Mechanism to read in problem
-- [ ] Input reader (read xls file) using:
+- [x] Mechanism to read in problem
+- [x] Input reader (read xls file) using: (.xlsx using pandas)
 	+ xlutils or
 	+ xlrd and xlwt
 		+ http://www.sitepoint.com/using-python-parse-spreadsheet-data/
@@ -20,10 +20,10 @@ Modular Code:
 		+ http://www.python-excel.org/
 	+ pyexcel
 		+http://pythonhosted.org/pyexcel/
-- [ ] Build Feval
+- [x] Build Feval
 - [ ] Basic wrapper (for a given x)
 
-- [ ] Build isFeas
+- [x] Build isFeas
 - [ ] Implement Heuristic 1 (find x's to eval) 
 - [ ] Implement Heuristic 2
 
