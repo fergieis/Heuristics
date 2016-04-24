@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import random as rnd
 #import openpyxl
 #from openpyxl import load_workbook
 
@@ -32,6 +33,13 @@ def isFeasible(A,b,x):
 #return boolean value representing feasibility of x	
 	return (np.all(np.less_equal(np.dot(A,x),b)))
 
+def generateTABUCandidates(x):
+	swaps = []
+	while np.count_nonzero(swaps) <= 2:
+		swaps =  np.random.randint(2, size=50);
+	cand = np.logical_xor(x, swaps)
+	return cand
+	
 def antColony(c,x):
 #Ant Colony (?) - insert docstring here
 
@@ -41,6 +49,25 @@ def TABUsearch(c,x):
 #TABU Search- docstring here
 
 	return x
+
+def SimulatedAnnealing(A, b, c, x)
+#takes model parameters A, b,c and an initial solution x
+#returns best found x
+
+#temperature -> t
+#iterations at some temperature t -> r(t)
+
+	change = True
+
+	while change:
+		change = False
+		
+
+
+
+
+	return x
+
 
 #/--------------------/
 #         MAIN
@@ -55,6 +82,11 @@ def TABUsearch(c,x):
 x = np.random.randint(2, size=50)
 print(isFeasible(A,b,x))
 z = feval(c,x)
+print(z)
+
+y = generateTABUCandidates(x)
+print(isFeasible(A,b,y))
+z = feval(c,y)
 print(z)
 
 #Evaluate a trivial solution, 0 vector

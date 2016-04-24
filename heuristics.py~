@@ -1,10 +1,12 @@
 import numpy as np
 import pandas as pd
+import random as rnd
 #import openpyxl
 #from openpyxl import load_workbook
 
 def readProblem(i):
-#filename, sheetname	
+#Read in a single problem, and then
+#return A,b,c as numpy arrays
 	
 	filename = 'ProjectProblems.xlsx'
 	sheetname = 'Sample Problems'
@@ -24,28 +26,54 @@ def readProblem(i):
 
 
 def feval(c,x):
+#return objective function value at some point 'x'
 	return np.dot(c,x)
 
-def isFeasible(A,b,x):	
+def isFeasible(A,b,x):
+#return boolean value representing feasibility of x	
 	return (np.all(np.less_equal(np.dot(A,x),b)))
 
-def readData(filename):
-	return A, b, c
-
+def generateTABUCandidates(x):
+	swaps = []
+	while np.count_nonzero(swaps) <= 2:
+		swaps =  np.random.randint(2, size=50);
+	cand = np.logical_xor(x, swaps)
+	return cand
+	
 def antColony(c,x):
+#Ant Colony (?) - insert docstring here
 
 	return x
 
 def TABUsearch(c,x):
 
+	
+	
+#TABU Search- docstring here
+
 	return x
 
+#/--------------------/
+#         MAIN
+#/--------------------/
+
+#will loop over all problems, here just #1
 (A, b, c) = readProblem(1)
+
+#Call heuristics -- 
+
+#Evaluate a random x
 x = np.random.randint(2, size=50)
 print(isFeasible(A,b,x))
 z = feval(c,x)
 print(z)
 
+y = generateTABUCandidates(x)
+print(isFeasible(A,b,y))
+z = feval(c,y)
+print(z)
+
+#Evaluate a trivial solution, 0 vector
 x = np.zeros(50)
 print(isFeasible(A,b,x))
 z = feval(c,x)
