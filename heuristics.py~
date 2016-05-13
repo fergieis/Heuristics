@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 import random as rnd
+from heapq import nlargest
+import pprint
 #import openpyxl
 #from openpyxl import load_workbook
 
@@ -46,12 +48,73 @@ def antColony(c,x):
 	return x
 
 def TABUsearch(c,x):
-
-	
-	
 #TABU Search- docstring here
 
 	return x
+
+def SimulatedAnnealing(A, b, c, x):
+#takes model parameters A, b,c and an initial solution x
+#returns best found x
+
+#temperature -> t
+#iterations at some temperature t -> r(t)
+	change = True
+
+	while change:
+		change = False
+		
+	return x
+
+def GAf(A,b,c,x):
+	if all(np.dot(A,x.T)<=b):
+		return np.dot(c,x.T)
+	else: #penalize infeasibility
+		return max(0,np.dot(c,x.T)-(max(c)*(sum(np.dot(A,x.T)-b))))
+	
+
+
+def GAInit(A,b,c,popsize):			
+	x = np.random.choice([0,1], size=(popsize, len(c)))	
+			
+	f={}	
+	for i in xrange(popsize):
+		f[i]=GAf(A,b,c,x[i,:])
+	return x, f
+
+def GASearch(A,b,c):
+	popsize=100
+	survivalpop = 90
+	kids = popsize - survivalpop
+
+	(x,f)=GAInit(A,b,c,popsize)
+	
+	best_generation = np.argmax(f)
+	total_generation = sum(f.values())
+	fitness = np.array(f.values())/total_generation
+
+	#fitness.update((k, v/total_generation) for k,v in fitness.items())
+	#np.divide(f,total_generation)
+	xnew = np.random.choice(xrange(popsize),size=popsize-kids, p=fitness)	
+	xnew = x[xnew,:]
+
+	child = np.empty(len(c))
+	breakpoints = np.random.randint(0,len(c),kids)
+	for breakpoint in breakpoints:
+		parents = np.random.choice(xrange(popsize),size=2, p=fitness)
+		parents = x[parents,:]
+		child[:breakpoint] = parents[0,:breakpoint]
+		child[breakpoint:] = parents[1,breakpoint:]
+		np.reshape(child,(1,len(c)))		
+		print(x.shape)
+		print(child.shape)
+		np.vstack((xnew, child))
+
+	#for i in xrange(popsize):
+	#	f[i]=GAf(A,b,c,sol)
+	
+	max(f.values())
+	return x, f	
+
 
 #/--------------------/
 #         MAIN
@@ -60,6 +123,10 @@ def TABUsearch(c,x):
 #will loop over all problems, here just #1
 (A, b, c) = readProblem(1)
 
+(x,f) = GASearch(A,b,c)
+
+
+
 #Call heuristics -- 
 
 #Evaluate a random x
@@ -67,16 +134,19 @@ x = np.random.randint(2, size=50)
 print(isFeasible(A,b,x))
 z = feval(c,x)
 print(z)
+print(GAf(A,b,c,x))
+
 
 y = generateTABUCandidates(x)
 print(isFeasible(A,b,y))
 z = feval(c,y)
 print(z)
+print(GAf(A,b,c,y))
 
 #Evaluate a trivial solution, 0 vector
 x = np.zeros(50)
 print(isFeasible(A,b,x))
 z = feval(c,x)
 print(z)
-
+print(GAf(A,b,c,x))
 

@@ -2,7 +2,9 @@ import numpy as np
 import pandas as pd
 import random as rnd
 from heapq import nlargest
+from tqdm import tqdm
 import pprint
+import matplotlib.pyplot as plt
 #import openpyxl
 #from openpyxl import load_workbook
 
@@ -74,77 +76,95 @@ def GAf(A,b,c,x):
 
 
 def GAInit(A,b,c,popsize):			
-	x = np.random.choice([0,1], size=(popsize, len(c)))	
-			
+	x = np.random.choice([0,1], size=(popsize, len(c)))		
+	return x
+
+def GAEval(A,b,c,x):				
 	f={}	
-	for i in xrange(popsize):
+	for i in xrange(x.shape[0]):
 		f[i]=GAf(A,b,c,x[i,:])
-	return x, f
+	return f
 
-def GASearch(A,b,c):
-	popsize=100
-	survivalpop = 90
-	kids = popsize - survivalpop
+def GAGen(A,b,c,x,f,popsize,kids,mrate):
+	mutationrate = mrate
+	total_generation = sum(f.values())	
+	while total_generation <=0:
+		x = GAInit(A,b,c,popsize)
+		f = GAEval(A,b,c,x)
+		total_generation = sum(f.values())	
+	best_generation = np.argmax(f)		
 
-	(x,f)=GAInit(A,b,c,popsize)
-	
-	best_generation = np.argmax(f)
-	total_generation = sum(f.values())
-	fitness = np.array(f.values())/total_generation
-
+	fitness = np.array(f.values())/total_generation	
 	#fitness.update((k, v/total_generation) for k,v in fitness.items())
 	#np.divide(f,total_generation)
-	xnew = np.random.choice(xrange(popsize),size=popsize-kids, p=fitness)	
-	xnew = x[xnew,:]
-
+	xnew = np.random.choice(xrange(x.shape[0]),size=x.shape[0]-kids-1, p=fitness)	
+	xnew = np.vstack((x[best_generation],x[xnew,:]))
 	child = np.empty(len(c))
 	breakpoints = np.random.randint(0,len(c),kids)
 	for breakpoint in breakpoints:
-		parents = np.random.choice(xrange(popsize),size=2, p=fitness)
+		parents = np.random.choice(xrange(popsize),size=4, p=fitness)
+		tuples = []		
+		for p in parents:
+			tuples.append((p,(fitness[p])))
+		parentlist = sorted(tuples,key=lambda tuples:-tuples[1])	
+		parents = [parentlist[0][0],parentlist[1][0]]
+
 		parents = x[parents,:]
 		child[:breakpoint] = parents[0,:breakpoint]
 		child[breakpoint:] = parents[1,breakpoint:]
 		np.reshape(child,(1,len(c)))		
 		xnew = np.vstack((xnew, child))
-	print(xnew.shape)
-	#for i in xrange(popsize):
-	#	f[i]=GAf(A,b,c,sol)
+
+	for mutation in range(int(mutationrate*popsize)):	
+		mutationcol = np.random.randint(0,len(c))
+		mutationrow = np.random.randint(0, popsize)
+		x[mutationrow,mutationcol] = int((1+x[mutationrow,mutationcol])%2)
+
+	x = xnew
+	f = GAEval(A,b,c,x)
+	bsf = max(f.values())
+	bs = x[np.argmax(f)]
 	
-	max(f.values())
-	return x, f	
+	return x,f,bs,bsf
+
+def GASearch(A,b,c):
+	popsize=100
+	kids = 20
+	survivalpop = popsize-kids
+
+	x=GAInit(A,b,c,popsize)
+	f=GAEval(A,b,c,x)
+	bestsofar = max(f.values())
+	bestso = x[np.argmax(f),:]
+	bs = np.zeros(len(c))
+	bsf = 0
+	hist = []
+	hist.append(bestsofar)	
+	mrate = .05
+	for gen in tqdm(xrange(1000)):
+		(x,f,bs,bsf) = GAGen(A,b,c,x,f,popsize,kids,mrate)
+		if bsf > bestsofar:
+			bestsofar = bsf
+			bestso = bs
+		if gen % 100 == 0:
+			#print("Generation "+str(gen))			
+			hist.append(bestsofar)		
+	
+	return bestso, bestsofar	
 
 
 #/--------------------/
 #         MAIN
 #/--------------------/
 
-#will loop over all problems, here just #1
-(A, b, c) = readProblem(1)
 
-(x,f) = GASearch(A,b,c)
-
-
-
-#Call heuristics -- 
-
-#Evaluate a random x
-x = np.random.randint(2, size=50)
-print(isFeasible(A,b,x))
-z = feval(c,x)
-print(z)
-print(GAf(A,b,c,x))
+for prob in xrange(1,12):
+	(A, b, c) = readProblem(prob)
+	print("GA Iteration Problem " + str(prob))
+	(x,f) = GASearch(A,b,c)
+	print(x)
+	print(f)
 
 
-y = generateTABUCandidates(x)
-print(isFeasible(A,b,y))
-z = feval(c,y)
-print(z)
-print(GAf(A,b,c,y))
 
-#Evaluate a trivial solution, 0 vector
-x = np.zeros(50)
-print(isFeasible(A,b,x))
-z = feval(c,x)
-print(z)
-print(GAf(A,b,c,x))
 
