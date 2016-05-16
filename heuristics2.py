@@ -95,6 +95,8 @@ def GAGen(A,b,c,x,f,popsize,kids,mrate):
 	best_generation = np.argmax(f)		
 
 	fitness = np.array(f.values())/total_generation	
+	fitness[1] = fitness[1] + (1-sum(fitness))	
+	
 	#fitness.update((k, v/total_generation) for k,v in fitness.items())
 	#np.divide(f,total_generation)
 	xnew = np.random.choice(xrange(x.shape[0]),size=x.shape[0]-kids-1, p=fitness)	

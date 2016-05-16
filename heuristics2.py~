@@ -157,20 +157,13 @@ def GASearch(A,b,c):
 #         MAIN
 #/--------------------/
 
-#will loop over all problems, here just #1
-prob = 7
-(A, b, c) = readProblem(prob)
-print("GA Iteration Problem " + str(prob))
-(x,f) = GASearch(A,b,c)
-print(x)
-print(f)
 
-#for prob in xrange(1,12):
-#	(A, b, c) = readProblem(prob)
-#	print("GA Iteration Problem " + str(prob))
-#	(x,f) = GASearch(A,b,c)
-#	print(x)
-#	print(f)
+for prob in xrange(1,12):
+	(A, b, c) = readProblem(prob)
+	print("GA Iteration Problem " + str(prob))
+	(x,f) = GASearch(A,b,c)
+	print(x)
+	print(f)
 
 
 
