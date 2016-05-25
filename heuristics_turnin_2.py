@@ -143,13 +143,10 @@ def GASearch(A,b,c,popsize,kids,mrate):
 
 #print("prob"+"\t"+"popsize"+"\t"+"kids"+"\t"+"f")
 for prob in xrange(1,11):
-	for popsize in [500]:
-		for kids in [50]:
-			(A, b, c) = readProblem(prob)
-			print("GA Problem " + str(prob))
-			(x,f) = GASearch(A,b,c,popsize,kids,.05)
-			#print(str(prob)+"\t"+str(popsize)+"\t"+str(kids)+"\t"+str(f))
-
+	(A, b, c) = readProblem(prob)
+	print("GA Problem " + str(prob))
+	(x,f) = GASearch(A,b,c,popsize=500,kids=50,.05)
+	print(f)		
 
 
 
